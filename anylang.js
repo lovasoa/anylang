@@ -27,28 +27,37 @@ Anylang = (function() {
   }
   
   if (typeof document !== "undefined") {
+
+    function bindToInput(input) {
+      var data = input.dataset;
+      var anylang = new Anylang(data.anylangTo, data.anylangFrom);
+      var target = document.getElementById(data.anylangTarget);
+      var change = function anylang_change(evt){
+        var trans = anylang.equiv(input.value);
+        data.anylangEquiv = trans;
+        if (target !== null) {
+          if (target.value !== void 0) {
+            target.value = trans;
+          } else {
+            target.innerHTML = trans;
+          }
+        }
+      }
+      input._anylang_update_equiv = change;
+      input.addEventListener("keyup", change);
+      input.addEventListener("change", change);
+    }
+
+    Anylang.attach = bindToInput;
+    Anylang.detach = function Anylang_detach(input) {
+      input.removeEventListener("keyup", input._anylang_update_equiv);
+      input.removeEventListener("change", input._anylang_update_equiv);
+    }
+
     document.addEventListener("DOMContentLoaded", function(event) {
       var inputs = document.querySelectorAll("input[data-anylang-to]");
       for (var i=0; i<inputs.length; i++) {
-        var input = inputs[i];
-        var change = (function (input) {
-          var data = input.dataset;
-          var anylang = new Anylang(data.anylangTo, data.anylangFrom);
-          var target = document.getElementById(data.anylangTarget);
-          return function(evt){
-            var trans = anylang.equiv(input.value);
-            data.anylangEquiv = trans;
-            if (target !== null) {
-              if (target.value !== void 0) {
-                target.value = trans;
-              } else {
-                target.innerHTML = trans;
-              }
-            }
-          }
-        })(input);
-        input.addEventListener("keyup", change);
-        input.addEventListener("change", change);
+        bindToInput(inputs[i]);
       }
     });
   }
