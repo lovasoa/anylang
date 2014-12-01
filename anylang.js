@@ -54,6 +54,7 @@ Anylang = (function() {
         }
         data.anylangEquiv = trans;
       }
+      change();
       input._anylang_update_equiv = change;
       input.addEventListener("keyup", change);
       input.addEventListener("change", change);
