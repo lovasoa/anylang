@@ -30,9 +30,15 @@ Anylang = (function() {
 
     function bindToInput(input) {
       var data = input.dataset;
+      var langs = data.anylangTo + '-' + data.anylangFrom;
       var anylang = new Anylang(data.anylangTo, data.anylangFrom);
       var target = document.getElementById(data.anylangTarget);
       var change = function anylang_change(evt){
+        var curlangs = data.anylangTo + '-' + data.anylangFrom;
+        if (curlangs !== langs) {
+          langs = curlangs;
+          anylang = new Anylang(data.anylangTo, data.anylangFrom);
+        }
         var trans = anylang.equiv(input.value);
         data.anylangEquiv = trans;
         if (target !== null) {
