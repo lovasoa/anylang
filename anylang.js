@@ -4,9 +4,9 @@ Anylang = (function() {
   function Anylang(langDestination, langOrigin){
     this.origin = langOrigin;
     this.langDestination = langDestination;
-    try {
+    if (tables[langDestination] && tables[langDestination][langOrigin]) {
       this.table = tables[langDestination][langOrigin];
-    } catch (e) {
+    } else {
       console.log("Anylang: language not loaded: "+langDestination);
       this.invalid = true;
     }
