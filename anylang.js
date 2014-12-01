@@ -33,11 +33,10 @@ Anylang = (function() {
   
   if (typeof document !== "undefined") {
 
-    function bindToInput(input) {
+    function bindToInput(input, target) {
       var data = input.dataset;
       var langs = data.anylangTo + '-' + data.anylangFrom;
       var anylang = new Anylang(data.anylangTo, data.anylangFrom);
-      var target = document.getElementById(data.anylangTarget);
       var change = function anylang_change(evt){
         var curlangs = data.anylangTo + '-' + data.anylangFrom;
         if (curlangs !== langs) {
@@ -69,7 +68,9 @@ Anylang = (function() {
     document.addEventListener("DOMContentLoaded", function(event) {
       var inputs = document.querySelectorAll("input[data-anylang-to]");
       for (var i=0; i<inputs.length; i++) {
-        bindToInput(inputs[i]);
+        var input = inputs[i];
+        var target = document.getElementById(input.dataset.anylangTarget);
+        bindToInput(input, target);
       }
     });
   }
