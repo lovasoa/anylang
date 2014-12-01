@@ -37,7 +37,7 @@
         {"from":"y","to":"ы"},
         {"from":"'","to":"ь"},
         {"from":"è","to":"э"},
-        { from: '|'g, to: '' } //Separator to prevent to consecutive letters from being merged
+        {"from":'|',"to":''} //Separator to prevent to consecutive letters from being merged
         ]
     });
 })();
