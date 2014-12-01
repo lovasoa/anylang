@@ -4,7 +4,12 @@ Anylang = (function() {
   function Anylang(langDestination, langOrigin){
     this.origin = langOrigin;
     this.langDestination = langDestination;
-    this.table = tables[langDestination][langOrigin];
+    try {
+      this.table = tables[langDestination][langOrigin];
+    } catch (e) {
+      console.log("Anylang: language not loaded: "+langDestination);
+      this.invalid = true;
+    }
   };
 
   Anylang.addLang = function addLang(equivs) {
@@ -39,15 +44,19 @@ Anylang = (function() {
           langs = curlangs;
           anylang = new Anylang(data.anylangTo, data.anylangFrom);
         }
-        var trans = anylang.equiv(input.value);
-        data.anylangEquiv = trans;
-        if (target !== null) {
-          if (target.value !== void 0) {
-            target.value = trans;
-          } else {
-            target.innerHTML = trans;
+        try {
+          var trans = anylang.equiv(input.value);
+          if (target !== null) {
+            if (target.value !== void 0) {
+              target.value = trans;
+            } else {
+              target.innerHTML = trans;
+            }
           }
+        } catch(e) {
+          var trans = input.value;
         }
+        data.anylangEquiv = trans;
       }
       input._anylang_update_equiv = change;
       input.addEventListener("keyup", change);
