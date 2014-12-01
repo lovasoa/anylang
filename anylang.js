@@ -44,17 +44,14 @@ Anylang = (function() {
           langs = curlangs;
           anylang = new Anylang(data.anylangTo, data.anylangFrom);
         }
-        try {
-          var trans = anylang.equiv(input.value);
-          if (target !== null) {
-            if (target.value !== void 0) {
-              target.value = trans;
-            } else {
-              target.innerHTML = trans;
-            }
+        var trans = (anylang.invalid) ? input.value : anylang.equiv(input.value);
+        var printed = (anylang.invalid) ? "" : trans;
+        if (target !== null) {
+          if (target.value !== void 0) {
+            target.value = printed;
+          } else {
+            target.innerHTML = printed;
           }
-        } catch(e) {
-          var trans = input.value;
         }
         data.anylangEquiv = trans;
       }
