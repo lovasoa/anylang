@@ -70,6 +70,7 @@
         {"from":"y","to":"ы"},
         {"from":"'","to":"ь"},
         {"from":"è","to":"э"},
+        {"from":"*","to":"\u0301"}, // Accent
         {"from":'|',"to":''} //Separator to prevent to consecutive letters from being merged
         ]
     });

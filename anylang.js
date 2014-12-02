@@ -16,7 +16,9 @@ Anylang = (function() {
     tables[equivs.langDestination] = tables[equivs.langDestination] || {};
     tables[equivs.langDestination][equivs.langOrigin] = equivs.table.map(function(eq){
       if (typeof eq.from === "string") {
-        eq.from = new RegExp(eq.from, 'g');
+        eq.from = new RegExp(
+          eq.from.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&"),
+          'g');
         return eq;
       }
       return eq;
