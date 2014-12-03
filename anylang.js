@@ -13,24 +13,58 @@ Anylang = (function() {
   };
 
   Anylang.addLang = function addLang(equivs) {
-    tables[equivs.langDestination] = tables[equivs.langDestination] || {};
-    tables[equivs.langDestination][equivs.langOrigin] = equivs.table.map(function(eq){
-      if (typeof eq.from === "string") {
-        eq.from = new RegExp(
-          eq.from.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&"),
-          'g');
-        return eq;
-      }
-      return eq;
+    var trie = {children: {}, regEquiv: []};
+    
+    equivs.table.sort(function(a,b){
+      return (a.from.length|0) - (b.from.length|0);
     });
+
+    for (var i=0; i<equivs.table.length; i++) {
+      var cur = trie;
+      var equiv = equivs.table[i];
+      var from = equiv.from;
+
+      if (typeof from === "string"){
+        for (var pos=0; pos < from.length; pos++) {
+          var letter = from[pos];
+          cur.children[letter] = cur.children[letter] || {children:{}, replacement:cur.replacement};
+          cur = cur.children[letter];
+        }
+        cur.replacement = equiv;
+      } else {
+        trie.regEquiv.push(equiv);
+      }
+    }
+
+    tables[equivs.langDestination] = tables[equivs.langDestination] || {};
+    tables[equivs.langDestination][equivs.langOrigin] = trie;
   }
 
   Anylang.prototype.equiv = function equiv(txt) {
-    for (var j=0; j<this.table.length; j++) {
-        var repl = this.table[j];
-        txt = txt.replace(repl.from, repl.to);
+    var res = [];
+    for (var pos=0; pos<txt.length;) {
+      var cur = this.table;
+      for (var i=pos; cur.children.hasOwnProperty(txt[i]); i++){
+        cur = cur.children[txt[i]];
+      }
+      if (cur.replacement) {
+        var equiv = cur.replacement;
+      } else {
+        var equiv = {from: txt[pos], to: txt[pos]};
+        for (var i=0; i<this.table.regEquiv.length; i++) {
+          var reg = this.table.regEquiv[i];
+          var matched = txt.substring(pos).match(reg.from); 
+          if (matched !== null && matched.index === 0) {
+            equiv.from = matched[0];
+            equiv.to = reg.to;
+            break;
+          }
+        }
+      }
+      res.push(equiv.to); 
+      pos += equiv.from.length;
     }
-    return txt;
+    return res.join("");
   }
   
   if (typeof document !== "undefined") {
