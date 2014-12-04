@@ -44,6 +44,26 @@ Anylang = (function() {
     var res = [];
     for (var pos=0; pos<txt.length;) {
       var cur = this.table;
+      if (txt[pos] === '\\' && pos < txt.length-1) {
+        // Consider '\' as an escape character
+        res.push(txt[pos+1]);
+        pos+=2;
+        continue;
+      } else if (txt[pos] === '#' && txt[pos+1] === '[') {
+        // Do not transliterate text that is between brackets
+        for(var i=pos+2,count=1; i<txt.length && count>0; i++) {
+          switch(txt[i]){
+            case '[': count++; break;
+            case ']': count--; break;
+            case '\\': i++; break;
+          }
+        }
+        if (count === 0) {
+          res.push(txt.substring(pos+1,i));
+          pos = i;
+          continue;
+        }
+      }
       for (var i=pos; cur.children.hasOwnProperty(txt[i]); i++){
         cur = cur.children[txt[i]];
       }
