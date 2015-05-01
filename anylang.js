@@ -123,7 +123,7 @@ Anylang = (function() {
     }
 
     document.addEventListener("DOMContentLoaded", function(event) {
-      var inputs = document.querySelectorAll("input[data-anylang-to]");
+      var inputs = document.querySelectorAll("[data-anylang-to]");
       for (var i=0; i<inputs.length; i++) {
         var input = inputs[i];
         var target = document.getElementById(input.dataset.anylangTarget);
